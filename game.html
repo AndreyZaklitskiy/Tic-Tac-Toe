@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tic-Tac-Toe game vs bot</title>
+    <style>
+      .wrap {
+        line-height: 0px;
+      }
+      .cell {
+        border: 1px solid black;
+        width: 100px;
+        height: 100px;
+        display: table-cell;
+        background-color: tan;
+        font: bold 60px comic sans ms;
+        text-align: center;
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="cell" data-num="0"></div>
+      <div class="cell" data-num="1"></div>
+      <div class="cell" data-num="2"></div>
+      <br />
+      <div class="cell" data-num="3"></div>
+      <div class="cell" data-num="4"></div>
+      <div class="cell" data-num="5"></div>
+      <br />
+      <div class="cell" data-num="6"></div>
+      <div class="cell" data-num="7"></div>
+      <div class="cell" data-num="8"></div>
+    </div>
+
+    <script>
+      let stop = false;
+      let arrData = document.querySelectorAll("[data-num]");
+      let arr = [null, null, null, null, null, null, null, null, null];
+
+      // ф-ия конкатенации ячеек, поинимаеь значения ячеек и складывает их в строку, null приводится к строке
+      let concat = function (a, b, c) {
+        let result = arr[a] + arr[b] + arr[c];
+        // вернет 'xxx'/'ooo' в зависимости если будет такой результат...
+        if (result === "xxx" || result === "ooo") {
+          return result;
+        }
+
+        //если результат будет таким как один из этих вариантов то вернет соответствующий массив.
+        // боту будет ясно что есть выиграшная комбинация и что ее нужно закрыть.
+        switch (result) {
+          case "xxnull":
+            return ["x", c];
+          case "xnullx":
+            return ["x", b];
+          case "nullxx":
+            return ["x", a];
+          case "oonull":
+            return ["o", c];
+          case "onullo":
+            return ["o", b];
+          case "nulloo":
+            return ["o", a];
+        }
+      };
+
+      // ф-ия будет активироваться при выиграше, будет подсвечивать выигрыш.
+      let changeColorAndStop = function (a, b, c) {
+        arrData[a].style.color = "red";
+        arrData[b].style.color = "red";
+        arrData[c].style.color = "red";
+
+        stop = true;
+      };
+
+      //Проверка возможных выиграшных комбинаций.
+      let checkWin = function () {
+        //столбцы
+        for (let i = 0; i < 3; i++) {
+          let result = concat(i, i + 3, i + 6);
+          if (result === "xxx" || result === "ooo") {
+            changeColorAndStop(i, i + 3, i + 6);
+          }
+        }
+        //ряды
+        for (let i = 0; i < 6; i += 3) {
+          let result = concat(i, i + 1, i + 2);
+
+          if (result === "xxx" || result === "ooo") {
+            changeColorAndStop(i, i + 1, i + 2);
+          }
+        }
+        // диагонали
+        result = concat(0, 4, 8);
+        if (result === "xxx" || result === "ooo") {
+          changeColorAndStop(0, 4, 8);
+        }
+        result = concat(2, 4, 6);
+        if (result === "xxx" || result === "ooo") {
+          changeColorAndStop(2, 4, 6);
+        }
+      };
+      // бот, практически идентичен checkWin.
+      let botZero = function () {
+        //ПРОВЕРКА СВОИХ ХОДОВ
+        //столбцы
+        for (let i = 0; i < 3; i++) {
+          let result = concat(i, i + 3, i + 6);
+          if (typeof result === "object" && result[0] === "o") {
+            arrData[result[1]].innerHTML = "o";
+            arrData[result[1]] = "o";
+            return;
+          }
+        }
+        //ряды
+        for (let i = 0; i < 6; i += 3) {
+          let result = concat(i, i + 1, i + 2);
+
+          if (typeof result === "object" && result[0] === "o") {
+            arrData[result[1]].innerHTML = "o";
+            arrData[result[1]] = "o";
+            return;
+          }
+        }
+        // диагонали
+        result = concat(0, 4, 8);
+        if (typeof result === "object" && result[0] === "o") {
+          arrData[result[1]].innerHTML = "o";
+          arrData[result[1]] = "o";
+          return;
+        }
+        result = concat(2, 4, 6);
+        if (typeof result === "object" && result[0] === "o") {
+          arrData[result[1]].innerHTML = "o";
+          arrData[result[1]] = "o";
+          return;
+        }
+
+        //ПРОВЕРКА ХОДОВ ОПОНЕНТА
+        //столбцы
+        for (let i = 0; i < 3; i++) {
+          let result = concat(i, i + 3, i + 6);
+          if (typeof result === "object" && result[0] === "x") {
+            arrData[result[1]].innerHTML = "o";
+            arrData[result[1]] = "o";
+            return;
+          }
+        }
+        //ряды
+        for (let i = 0; i < 6; i += 3) {
+          let result = concat(i, i + 1, i + 2);
+
+          if (typeof result === "object" && result[0] === "x") {
+            arrData[result[1]].innerHTML = "o";
+            arrData[result[1]] = "o";
+            return;
+          }
+        }
+        // диагонали
+        result = concat(0, 4, 8);
+        if (typeof result === "object" && result[0] === "x") {
+          arrData[result[1]].innerHTML = "o";
+          arrData[result[1]] = "o";
+          return;
+        }
+        result = concat(2, 4, 6);
+        if (typeof result === "object" && result[0] === "x") {
+          arrData[result[1]].innerHTML = "o";
+          arrData[result[1]] = "o";
+          return;
+        }
+
+
+
+        // ЛОГИКА КОГДА БОТ СТАВИТ 0 В ПУСТУЮ ЯЧЕЙКУ
+        let tempArr = [];
+        for(let i = 0; i<9; i++) {
+            if(arr[i] === null) {
+                tempArr.push(i)
+            }
+        }
+        // РАНДОМНЫЙ ИНДЕКС: округляем(случайное число от 0 до 1 не включительно * длинна массива tempArr)
+        let randIndexTempArr = Math.floor(Math.random() * tempArr.length)
+        // ИНДЕКС СЛУЧАЙНОЙ ПУСТОЙ ЯЧЕЙКИ
+        let randNull = tempArr[randIndexTempArr];
+
+        console.log(arrData[randNull]);
+        arrData[randNull].innerHTML = 'o';
+        console.log(arr[randNull]);
+        arr[randNull] = 'o';
+      };
+
+      
+
+      //при клике...
+      addEventListener("click", function (event) {
+        // если игра закончена то вернет ретурн.
+        if (stop === true) {
+          return;
+        }
+        //проверка что клик производится по ячейке, что она пустая, ставим X.
+        if (
+          event.target.className === "cell" &&
+          event.target.textContent === ""
+        ) {
+          event.target.style.color = "blue";
+          event.target.innerHTML = "x";
+          arr[event.target.dataset.num] = "x";
+
+          // console.log(arr);
+        } else {
+          return;
+        }
+
+        checkWin();
+
+        if (stop === true) {
+          return;
+        }
+
+        botZero()
+
+        checkWin()
+      });
+    </script>
+  </body>
+</html>
